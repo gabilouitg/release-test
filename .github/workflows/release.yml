@@ -26,8 +26,6 @@ jobs:
         with:
           tag_name: issue
           release_name: release ${{ github.ref_name }}
-          draft: true
-          prerelease: true
 
 
         
