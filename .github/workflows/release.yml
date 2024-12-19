@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: echo ${{github.ref_name}}
       - name: checkout
         uses: actions/checkout@v4
       - name: setup node
@@ -29,4 +28,7 @@ jobs:
           release_name: release ${{ github.ref_name }}
           draft: false
           prerelease: false
+          allowUpdates : true
+
+
         
