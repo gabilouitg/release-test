@@ -3,13 +3,39 @@ name: Release
 on:
   push:
     branches:
-      - 'dev'
+      - "dev"
 
 jobs:
-  release:
+  build:
     permissions: write-all
     runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: install depedencies
+        run: npm ci
+      - name: build
+        run: npm build
 
+  test:
+    needs: build
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: install depedencies
+        run: npm ci
+      - name: run test
+        run: npm test
+
+  release:
+    needs: test
+    permissions: write-all
+    runs-on: ubuntu-latest
+    environment:
+      name: dev
+      url: ${{ steps.release.outputs.page_url }}
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -17,10 +43,7 @@ jobs:
         id: release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.run_id }}
           release_name: release ${{ github.ref_name }}
-
-
-        
